@@ -269,8 +269,7 @@ function row(p){return '<tr id="'+pid(p)+'-t" class="'+(p.vs?'vsr':'')+'"><td cl
 const HEAD='<tr><th>프로그램 <small style="color:#ccc">이름 누르면 공식 페이지</small></th><th>선발 · 합격률</th><th>마감</th><th>지원 자격</th><th>비용 (USD) <small style="color:#ccc">2026년</small></th><th>학년</th><th>기간</th></tr>';
 function card(p,op){const d=p.dl.split('<br>')[0];return '<details id="'+pid(p)+'-c" class="pc '+(p.vs?'vsr':'')+'"'+(op?' open':'')+'><summary><span class="pt1"><b>'+p.name+'</b>'+lv(p)+'</span><span class="pt2">'+B[p.flag]+'<span class="dl1">마감 '+d+'</span></span><span class="chev" aria-hidden="true"></span></summary><div class="pb"><div class="s">'+p.sub+' · 합격률 '+p.rate+'</div><dl><dt>마감</dt><dd>'+p.dl+'</dd><dt>지원 자격</dt><dd>'+elig(p)+'</dd><dt>비용</dt><dd>'+p.cost+'</dd><dt>학년·기간</dt><dd>'+p.grade+' · '+p.dur+'</dd></dl><a class="olink" href="'+p.link+'" target="_blank" rel="noopener">공식 페이지 보기 ↗</a></div></details>'}
 document.addEventListener('toggle',e=>{const t=e.target;if(!(t.matches&&t.matches('details.pc')))return;const box=t.closest('.cards');if(!box)return;
-if(t.open){box.querySelectorAll('details.pc[open]').forEach(o=>{if(o!==t)o.open=false})}
-else if(!box.querySelector('details.pc[open]')){t.open=true}},true);
+if(t.open){box.querySelectorAll('details.pc[open]').forEach(o=>{if(o!==t)o.open=false})}},true);
 function block(list){return '<div class="tw"><table class="pt">'+HEAD+list.map(row).join('')+'</table></div><div class="cards">'+list.map((p,i)=>card(p,i===0)).join('')+'</div>'}
 
 document.querySelectorAll('[data-major]').forEach(el=>{const m=el.dataset.major;const l=D.filter(p=>p.majors.includes(m));
