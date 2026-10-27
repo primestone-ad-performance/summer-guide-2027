@@ -414,7 +414,14 @@ body.ps-gate-on{overflow:hidden}
     for(var c=document.body.children,i=0;i<c.length;i++){ if(c[i].id!=='psEnd') c[i].style.display='none'; }
     document.getElementById('psEnd').hidden=false; document.body.classList.add('ps-gate-on'); return;
   }
-  if(/[?&]reset_gate=1(&|$)/.test(location.search)){ try{localStorage.removeItem(KEY)}catch(e){} }   // 테스트용 — 처음 상태로
+  if(/[?&]reset_gate=1(&|$)/.test(location.search)){   // 테스트용 — 처음 상태로 (한 번만: 주소에서 지워 돌아왔을 때 다시 안 걸리게)
+    try{localStorage.removeItem(KEY)}catch(e){}
+    try{history.replaceState(null,'',location.pathname+location.search.replace(/([?&])reset_gate=1(&|$)/,'$1').replace(/[?&]$/,'')+location.hash)}catch(e){}
+  }
+  // 같은 탭으로 카카오에 갔다가 돌아오면 페이지가 새로 열릴 수 있다 → 표시해 둔 값으로 「가이드가 열려 있어요」
+  var cameBack=false; try{cameBack=sessionStorage.getItem('ps_gate_out')==='1'; sessionStorage.removeItem('ps_gate_out')}catch(e){}
+  if(cameBack){ var t0=document.getElementById('psToast'); t0.hidden=false; setTimeout(function(){t0.hidden=true},4000);
+    if(typeof track==='function') track('gate_return',{where:'gate'}); }
   // 아이폰은 카카오톡에 「뒤로 가기」가 없다 — ✕ 를 누르면 카톡 채팅방으로 간다 (10/27 담당자 아이폰 시험)
   // → 화면 맨 왼쪽 위 작은 「◀ Safari」(크롬이면 「◀ Chrome」)로 돌아오게 안내
   if(/iPhone|iPad|iPod/i.test(navigator.userAgent)){
@@ -425,12 +432,17 @@ body.ps-gate-on{overflow:hidden}
   if(seen) return;
   g.hidden=false; document.body.classList.add('ps-gate-on');
   if(typeof track==='function') track('gate_view',{where:'gate'});
+  // 휴대폰은 새 탭을 만들지 않는다 (10/27 담당자 아이폰 시험) — 새 탭이면 「◀ Safari」 로 돌아왔을 때
+  // 카카오 주소 탭이 먼저 보여 두 번 돌아가야 했다. 같은 탭에서 누르면 휴대폰이 카카오톡 앱으로 바로 넘기고
+  // 사파리·크롬에는 가이드가 그대로 남는다. PC 는 새 탭 그대로.
+  if(/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) b.removeAttribute('target');
   b.addEventListener('click',function(){
     if(typeof track==='function') track('channel_add_click',{where:'gate'});
     try{localStorage.setItem(KEY,'1')}catch(e){}
+    try{sessionStorage.setItem('ps_gate_out','1')}catch(e){}
     g.hidden=true; document.body.classList.remove('ps-gate-on');
     var t=document.getElementById('psToast'), shown=false;
-    function back(){ if(shown||document.visibilityState!=='visible') return; shown=true; t.hidden=false; if(typeof track==='function') track('gate_return',{where:'gate'}); setTimeout(function(){t.hidden=true},4000); }
+    function back(){ if(shown||document.visibilityState!=='visible') return; try{sessionStorage.removeItem('ps_gate_out')}catch(e){} shown=true; t.hidden=false; if(typeof track==='function') track('gate_return',{where:'gate'}); setTimeout(function(){t.hidden=true},4000); }
     document.addEventListener('visibilitychange',back); window.addEventListener('pageshow',back); window.addEventListener('focus',back);
   });
 })();
