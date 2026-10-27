@@ -343,7 +343,7 @@ body.ps-gate-on{overflow:hidden}
   var useForm=/[?&]consult=form(&|$)/.test(location.search);
   var btns=[].slice.call(document.querySelectorAll('a[href^="https://pf.kakao.com/_hxexnKb/chat"]')).filter(function(a){return !a.closest('#psEnd')});
   btns.forEach(function(a){
-    if(useForm){ a.href=FORM; return; }
+    if(useForm){ a.href=FORM; if(/카카오톡/.test(a.textContent)) a.textContent='상담 신청하기'; return; }
     if(a.closest('header')) return;
     var n=document.createElement('span'); n.className='ps-consult-note';
     n.textContent="‘썸머 가이드 보고 상담 원해요’라고 보내 주세요";
