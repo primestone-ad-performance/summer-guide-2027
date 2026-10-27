@@ -312,7 +312,7 @@ body.ps-gate-on{overflow:hidden}
     <p>카카오 채널을 추가하시면<br>가이드를 바로 보실 수 있습니다</p>
     <ol class="g-steps">
       <li>아래 <b>노란 버튼</b> → 카카오톡에서 <b>채널 추가</b><small>이미 친구라면 바로 2번으로</small></li>
-      <li>휴대폰 <b>뒤로 가기</b> → 가이드로 돌아오기<small>아이폰은 화면 왼쪽 위 「◀」</small></li>
+      <li id="psStep2">휴대폰 <b>뒤로 가기</b> → 가이드로 돌아오기<small>못 돌아오셨다면 QR을 한 번 더 찍으면 바로 열립니다</small></li>
     </ol>
     <a class="g-btn" id="psGateBtn" href="https://pf.kakao.com/_hxexnKb/friend" target="_blank" rel="noopener">
       <svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path fill="#000" d="M12 3C6.48 3 2 6.5 2 10.82c0 2.8 1.88 5.26 4.7 6.64l-.95 3.48c-.08.3.26.54.52.37l4.14-2.74c.52.06 1.05.1 1.59.1 5.52 0 10-3.5 10-7.85S17.52 3 12 3z"/></svg>
@@ -347,6 +347,12 @@ body.ps-gate-on{overflow:hidden}
     document.getElementById('psEnd').hidden=false; document.body.classList.add('ps-gate-on'); return;
   }
   if(/[?&]reset_gate=1(&|$)/.test(location.search)){ try{localStorage.removeItem(KEY)}catch(e){} }   // 테스트용 — 처음 상태로
+  // 아이폰은 카카오톡에 「뒤로 가기」가 없다 — ✕ 를 누르면 카톡 채팅방으로 간다 (10/27 담당자 아이폰 시험)
+  // → 화면 맨 왼쪽 위 작은 「◀ Safari」(크롬이면 「◀ Chrome」)로 돌아오게 안내
+  if(/iPhone|iPad|iPod/i.test(navigator.userAgent)){
+    var s2=document.getElementById('psStep2'), br=/CriOS/i.test(navigator.userAgent)?'Chrome':'Safari';
+    if(s2) s2.innerHTML='카카오톡 화면 <b>맨 왼쪽 위 작은 「◀ '+br+'」</b> 누르기<small>오른쪽 위 ✕ 는 누르지 마세요 (카톡 채팅방으로 갑니다) · 못 돌아오셨다면 QR을 한 번 더 찍으면 바로 열립니다</small>';
+  }
   var seen=false; try{seen=localStorage.getItem(KEY)==='1'}catch(e){}
   if(seen) return;
   g.hidden=false; document.body.classList.add('ps-gate-on');
