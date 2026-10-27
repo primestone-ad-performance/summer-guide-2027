@@ -326,6 +326,12 @@ body.ps-gate-on{overflow:hidden}
 <script>
 (function(){
   var KEY='ps_summer_gate_v1', g=document.getElementById('psGate'), b=document.getElementById('psGateBtn');
+  // 카카오톡 안 브라우저로 열면 채널 추가 화면이 이 페이지를 덮어 버려 뒤로 가기로 못 돌아온다 (10/27 담당자 시험)
+  // → 카카오톡 안에서 열린 경우 휴대폰 기본 브라우저로 다시 연다 (카카오톡이 지원하는 openExternal)
+  if(/KAKAOTALK/i.test(navigator.userAgent) && !/[?&]ext=1(&|$)/.test(location.search)){
+    var u=location.href+(location.search?'&':'?')+'ext=1';
+    location.href='kakaotalk://web/openExternal?url='+encodeURIComponent(u);
+  }
   var END=Date.parse('2027-01-09T00:00:00+09:00'), pv=/[?&]preview_end=1(&|$)/.test(location.search);
   if(pv || Date.now()>=END){
     for(var c=document.body.children,i=0;i<c.length;i++){ if(c[i].id!=='psEnd') c[i].style.display='none'; }
