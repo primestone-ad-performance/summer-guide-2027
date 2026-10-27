@@ -121,3 +121,35 @@ body.ps-gate-on{overflow:hidden}
   });
 })();
 </script>
+
+<script>
+/* 카카오 로그인 방식 시험 (10/27 · 주소 뒤 ?kakao_login=1 일 때만) — 노란 버튼 → 카카오 동의(채널 추가) → 이 페이지로 자동 복귀
+   · 개인정보 동의 항목은 하나도 켜지 않음 (회원 식별값만) · 받은 code 는 쓰지 않고 버린다
+   · 「채널 추가」 체크 칸은 카카오 비즈 앱 심사 + 채널 연결이 끝나야 동의 화면에 나온다 */
+(function(){
+  var KEY='ps_summer_gate_v1', JSKEY='ea65b4d5a76da7f90ba229f7a6b0d6f5', CH='_hxexnKb';
+  var q=location.search, on=/[?&]kakao_login=1(&|$)/.test(q) || /[?&]state=kl(&|$)/.test(q);
+  if(!on) return;
+  // 카카오에서 돌아온 경우 (?code=… 또는 ?error=…&state=kl)
+  if(/[?&]state=kl(&|$)/.test(q)){
+    try{localStorage.setItem(KEY,'1')}catch(e){}
+    var ok=/[?&]code=/.test(q);
+    if(typeof track==='function') track(ok?'kakao_login_done':'kakao_login_cancel',{where:'gate'});
+    try{history.replaceState(null,'',location.pathname+location.hash)}catch(e){}
+    var g=document.getElementById('psGate'); if(g){g.hidden=true; document.body.classList.remove('ps-gate-on');}
+    var t=document.getElementById('psToast'); if(t){t.textContent=ok?'채널 추가 완료 — 가이드를 바로 보실 수 있습니다':'가이드를 바로 보실 수 있습니다'; t.hidden=false; setTimeout(function(){t.hidden=true},4000);}
+    return;
+  }
+  var btn=document.getElementById('psGateBtn'); if(!btn) return;
+  var steps=document.querySelector('#psGate .g-steps'); if(steps) steps.style.display='none';
+  var sc=document.createElement('script'); sc.src='https://t1.kakaocdn.net/kakao_js_sdk/2.7.4/kakao.min.js'; sc.crossOrigin='anonymous';
+  sc.onload=function(){ try{ if(!Kakao.isInitialized()) Kakao.init(JSKEY);}catch(e){} };
+  document.head.appendChild(sc);
+  btn.addEventListener('click',function(ev){
+    if(!(window.Kakao&&Kakao.Auth)) return;          // SDK 가 아직이면 원래 방식(채널 추가 화면)으로
+    ev.preventDefault(); ev.stopImmediatePropagation();
+    if(typeof track==='function') track('channel_add_click',{where:'gate',label:'kakao_login'});
+    Kakao.Auth.authorize({redirectUri:location.origin+location.pathname, state:'kl', channelPublicId:CH});
+  },true);
+})();
+</script>
