@@ -1,0 +1,78 @@
+<!-- channel-gate (10/27 test) : 첫 화면 카드 — 카카오 채널 추가 유도 · 잠금 없음 · 가이드 본문은 그대로 -->
+<style>
+#psGate{position:fixed;inset:0;z-index:9999;display:flex;align-items:center;justify-content:center;padding:24px;background:rgba(255,255,255,.55);-webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px)}
+#psGate[hidden]{display:none}
+.ps-ov .g-card{width:100%;max-width:400px;background:#fff;border-radius:20px;padding:32px 24px 26px;box-shadow:0 10px 32px rgba(0,0,0,.12);text-align:center;font-family:'Pretendard',-apple-system,BlinkMacSystemFont,sans-serif;word-break:keep-all}
+.ps-ov .g-bar{width:36px;height:4px;border-radius:2px;background:#E8550A;margin:0 auto 18px}
+.ps-ov h2{margin:0 0 12px;font-size:23px;line-height:1.35;font-weight:800;color:#111;letter-spacing:-.02em}
+.ps-ov p{margin:0 0 24px;font-size:16px;line-height:1.55;color:#444}
+.ps-ov a.g-btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;min-height:56px;border-radius:12px;background:#FEE500;color:#000;font-size:17px;font-weight:700;text-decoration:none}
+.ps-ov a.g-btn:active{filter:brightness(.95)}
+.ps-ov a.g-btn svg{flex:none}
+.ps-ov .g-period{margin:14px 0 0;font-size:12.5px;color:#888}
+#psEnd{position:fixed;inset:0;z-index:10000;display:flex;align-items:center;justify-content:center;padding:24px;background:#fff}
+#psEnd[hidden]{display:none}
+#psEnd .g-card{box-shadow:none;box-shadow:none;border:1px solid #eee}
+#psEnd.ps-ov p{margin:0 0 24px;font-size:17px;line-height:1.6;color:#222}
+#psEnd p small{display:block;margin-top:8px;font-size:15px;color:#555}
+body.ps-gate-on{overflow:hidden}
+.ps-consult-note{display:block;margin:10px 0 0;font-size:13px;line-height:1.5;color:#777;word-break:keep-all}
+</style>
+<div id="psGate" class="ps-ov" role="dialog" aria-modal="true" aria-labelledby="psGateT" hidden>
+  <div class="g-card">
+    <div class="g-bar"></div>
+    <h2 id="psGateT">2027 Top tier<br>썸머 프로그램 가이드</h2>
+    <p>카카오 채널을 추가하시면<br>가이드를 바로 보실 수 있습니다</p>
+    <a class="g-btn" id="psGateBtn" href="https://pf.kakao.com/_hxexnKb/friend" target="_blank" rel="noopener">
+      <svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path fill="#000" d="M12 3C6.48 3 2 6.5 2 10.82c0 2.8 1.88 5.26 4.7 6.64l-.95 3.48c-.08.3.26.54.52.37l4.14-2.74c.52.06 1.05.1 1.59.1 5.52 0 10-3.5 10-7.85S17.52 3 12 3z"/></svg>
+      카카오 채널 추가하고 가이드 보기
+    </a>
+    <p class="g-period">공개 기간: 2027년 1월 8일까지</p>
+  </div>
+</div>
+<div id="psEnd" class="ps-ov" role="dialog" aria-modal="true" hidden>
+  <div class="g-card">
+    <div class="g-bar"></div>
+    <p>2027 썸머 프로그램 가이드 공개 기간이 끝났습니다.<small>자녀에게 맞는 프로그램은 개별 상담에서 안내해 드립니다.</small></p>
+    <a class="g-btn" href="https://pf.kakao.com/_hxexnKb/chat" target="_blank" rel="noopener">
+      <svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path fill="#000" d="M12 3C6.48 3 2 6.5 2 10.82c0 2.8 1.88 5.26 4.7 6.64l-.95 3.48c-.08.3.26.54.52.37l4.14-2.74c.52.06 1.05.1 1.59.1 5.52 0 10-3.5 10-7.85S17.52 3 12 3z"/></svg>
+      카카오톡으로 상담 신청
+    </a>
+  </div>
+</div>
+<script>
+(function(){
+  var KEY='ps_summer_gate_v1', g=document.getElementById('psGate'), b=document.getElementById('psGateBtn');
+  var END=Date.parse('2027-01-09T00:00:00+09:00'), pv=/[?&]preview_end=1(&|$)/.test(location.search);
+  if(pv || Date.now()>=END){
+    for(var c=document.body.children,i=0;i<c.length;i++){ if(c[i].id!=='psEnd') c[i].style.display='none'; }
+    document.getElementById('psEnd').hidden=false; document.body.classList.add('ps-gate-on'); return;
+  }
+  var seen=false; try{seen=localStorage.getItem(KEY)==='1'}catch(e){}
+  if(seen) return;
+  g.hidden=false; document.body.classList.add('ps-gate-on');
+  if(typeof track==='function') track('gate_view',{where:'gate'});
+  b.addEventListener('click',function(){
+    if(typeof track==='function') track('channel_add_click',{where:'gate'});
+    try{localStorage.setItem(KEY,'1')}catch(e){}
+    g.hidden=true; document.body.classList.remove('ps-gate-on');
+  });
+})();
+</script>
+
+<script>
+/* 상담 버튼 목적지 시험 (10/27 · 이사님 결정 전) — 기본 ② 카카오 채팅방 + 안내 한 줄 · ?consult=form 이면 ① 홈페이지 상담 신청 폼 */
+(function(){
+  var FORM='https://www.primestone.co.kr/?utm_source=summer_guide&utm_medium=web&utm_campaign=summer_guide_2027'+
+           '&utm_content='+(/simple/.test(location.pathname)?'simple':'detail')+'#doz_menu_contact';
+  var useForm=/[?&]consult=form(&|$)/.test(location.search);
+  var btns=[].slice.call(document.querySelectorAll('a[href^="https://pf.kakao.com/_hxexnKb/chat"]')).filter(function(a){return !a.closest('#psEnd')});
+  btns.forEach(function(a){
+    if(useForm){ a.href=FORM; return; }
+    if(a.closest('header')) return;
+    var n=document.createElement('span'); n.className='ps-consult-note';
+    n.textContent="‘썸머 가이드 보고 상담 원해요’라고 보내 주세요";
+    a.insertAdjacentElement('afterend',n);
+  });
+})();
+</script>
