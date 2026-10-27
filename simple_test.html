@@ -347,7 +347,7 @@ body.ps-gate-on{overflow:hidden}
     try{localStorage.setItem(KEY,'1')}catch(e){}
     g.hidden=true; document.body.classList.remove('ps-gate-on');
     var t=document.getElementById('psToast'), shown=false;
-    function back(){ if(shown||document.visibilityState!=='visible') return; shown=true; t.hidden=false; setTimeout(function(){t.hidden=true},4000); }
+    function back(){ if(shown||document.visibilityState!=='visible') return; shown=true; t.hidden=false; if(typeof track==='function') track('gate_return',{where:'gate'}); setTimeout(function(){t.hidden=true},4000); }
     document.addEventListener('visibilitychange',back); window.addEventListener('pageshow',back); window.addEventListener('focus',back);
   });
 })();
