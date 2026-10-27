@@ -399,6 +399,7 @@ body.ps-gate-on{overflow:hidden}
     for(var c=document.body.children,i=0;i<c.length;i++){ if(c[i].id!=='psEnd') c[i].style.display='none'; }
     document.getElementById('psEnd').hidden=false; document.body.classList.add('ps-gate-on'); return;
   }
+  if(/[?&]reset_gate=1(&|$)/.test(location.search)){ try{localStorage.removeItem(KEY)}catch(e){} }   // 테스트용 — 처음 상태로
   var seen=false; try{seen=localStorage.getItem(KEY)==='1'}catch(e){}
   if(seen) return;
   g.hidden=false; document.body.classList.add('ps-gate-on');
