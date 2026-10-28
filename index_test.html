@@ -251,12 +251,11 @@ footer{padding:36px 0 48px;color:var(--mute);font-size:13px;border-top:1px solid
 <div><h3><s>썸머는 꼭 다녀와야 한다</s></h3><p>합격의 필수 조건은 아닙니다. GPA가 아직 준비되지 않았다면 성적에 힘을 모으는 편이 나은 학생도 있습니다.</p></div>
 <div><h3><s>비쌀수록 좋은 프로그램이다</s></h3><p>반대에 가깝습니다. 가장 뽑기 어려운 7곳은 모두 무료이거나 등록비만 냅니다. 1천만 원이 넘는 곳도 심사를 통과해야 갑니다.</p></div>
 <div><h3><s>떨어지면 그해 여름은 끝이다</s></h3><p>프라임스톤컨설팅은 탑티어 → 인턴십 → 프리칼리지 순서로 여름 계획을 세웁니다.</p></div></div></div></section>
-<section class="blk alt" id="list"><div class="wrap"><h2 class="st"><span class="no">4</span>자녀에게 맞는 곳을 직접 찾아보세요</h2>
+<section class="blk alt" id="list"><div class="wrap"><h2 class="st"><span class="no">4</span><span style="color:var(--or)">버튼을 눌러</span> 자녀에게 맞는 곳을 직접 찾아보세요</h2>
 <div class="flow" style="margin:6px 0 22px"><div class="f a"><div class="w">먼저 · 프라임스톤컨설팅</div><h3>탑티어 31곳 골라두기</h3><p>수많은 썸머 프로그램 중 뽑혀서 가는 최상위 31곳만 남겼습니다</p></div><div class="ar">→</div>
 <div class="f"><div class="w">다음 · 학부모님</div><h3>조건으로 좁히기</h3><p>아래에서 전공·마감 달·국적·학년을 고르면 낼 수 있는 곳만 남습니다</p></div><div class="ar">→</div>
 <div class="f c"><div class="w">마지막 · 개별 상담</div><h3>합격 가능성 판단</h3><p>남은 곳 중 어디에 붙을 수 있을지 함께 따집니다</p></div></div>
-<p class="lead" style="margin-bottom:14px">처음이라면 예시부터 눌러 보세요. 생명과학에 관심 있는 11학년, 미국 시민권이 없는 학생이라면 31곳이 몇 곳으로 줄어드는지 보여 드립니다.</p>
-<button class="btn demo" id="demo" type="button" style="margin-bottom:22px">예시로 눌러 보기</button>
+<div style="height:22px"></div>
 <div class="tool" role="group" aria-label="프로그램 좁히기">
 <div class="row"><div class="lab">① 전공<small>여러 개 골라도 됩니다</small></div><div class="opts"><button class="opt" data-g="major" data-v="bio" aria-pressed="false">생명과학·의생명</button><button class="opt" data-g="major" data-v="phy" aria-pressed="false">물리·화학·재료·환경</button><button class="opt" data-g="major" data-v="cs" aria-pressed="false">컴퓨터·AI·로봇·공학</button><button class="opt" data-g="major" data-v="math" aria-pressed="false">수학·이론 컴퓨터</button><button class="opt" data-g="major" data-v="hum" aria-pressed="false">정치·국제관계·사회·인문</button><button class="opt" data-g="major" data-v="biz" aria-pressed="false">경영·경제·창업</button><button class="opt" data-g="major" data-v="write" aria-pressed="false">저널리즘·영문·문예창작</button><button class="opt" data-g="major" data-v="music" aria-pressed="false">음악·연주·작곡</button></div></div>
 <div class="row"><div class="lab">② 마감 달<small>여러 개 골라도 됩니다</small></div><div class="opts"><button class="opt" data-g="mon" data-v="12" aria-pressed="false">2026년 12월</button><button class="opt" data-g="mon" data-v="1" aria-pressed="false">1월</button><button class="opt" data-g="mon" data-v="2" aria-pressed="false">2월</button><button class="opt" data-g="mon" data-v="3" aria-pressed="false">3월</button><button class="opt" data-g="mon" data-v="4" aria-pressed="false">4월</button></div></div>
@@ -341,7 +340,7 @@ else if(g==='us')S.us=S.us===v?null:v;else if(g==='grade')S.grade=S.grade===+v?n
 document.getElementById('chips').addEventListener('click',e=>{const b=e.target.closest('[data-go]');if(!b)return;const mob=matchMedia('(max-width:760px)').matches;
 const el=document.getElementById(b.dataset.go+(mob?'-c':'-t'));if(!el)return;if(mob)el.open=true;el.scrollIntoView({behavior:matchMedia('(prefers-reduced-motion:reduce)').matches?'auto':'smooth',block:'center'});
 el.classList.remove('flash');void el.offsetWidth;el.classList.add('flash');track('result_name_click',{program:b.textContent})});
-document.getElementById('demo').addEventListener('click',()=>{S.major=new Set(['bio']);S.mon.clear();S.us='no';S.grade=11;S.sort='dl';run();track('demo_click',{});document.querySelector('.tool').scrollIntoView({behavior:matchMedia('(prefers-reduced-motion:reduce)').matches?'auto':'smooth',block:'start'})});
+document.getElementById('demo')?.addEventListener('click',()=>{S.major=new Set(['bio']);S.mon.clear();S.us='no';S.grade=11;S.sort='dl';run();track('demo_click',{});document.querySelector('.tool').scrollIntoView({behavior:matchMedia('(prefers-reduced-motion:reduce)').matches?'auto':'smooth',block:'start'})});
 document.getElementById('reset').addEventListener('click',()=>{S.major.clear();S.mon.clear();S.us=null;S.grade=null;S.sort='dl';run()});
 run();window._ready=true;</script><script>(function(){const m=[25,50,75,100],done={};addEventListener('scroll',()=>{const p=Math.round((scrollY+innerHeight)/document.body.scrollHeight*100);m.forEach(x=>{if(p>=x&&!done[x]){done[x]=1;track('scroll_depth',{percent:x})}})},{passive:true})})();</script><!-- channel-gate (10/27 test) : 첫 화면 카드 — 카카오 채널 추가 유도 · 잠금 없음 · 가이드 본문은 그대로 -->
 <!-- GA4 「썸머 가이드 2027」 (10/27 · 테스트 페이지만 · 숫자만 · 개인정보 없음) -->
