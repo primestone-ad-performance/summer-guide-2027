@@ -1,3 +1,4 @@
+<style>/* 10/28 상담 버튼 묶음 오른쪽 끝 */.ps-consult-wrap{display:flex;flex-direction:column;align-items:flex-end;gap:8px;margin-left:auto}@media(max-width:760px){.ps-consult-wrap{align-items:flex-start;margin-left:0}}</style>
 <!-- channel-gate (10/27 test) : 첫 화면 카드 — 카카오 채널 추가 유도 · 잠금 없음 · 가이드 본문은 그대로 -->
 <!-- GA4 「썸머 가이드 2027」 (10/27 · 테스트 페이지만 · 숫자만 · 개인정보 없음) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-Q5TK276JCZ"></script>
@@ -118,7 +119,8 @@ body.ps-gate-on{overflow:hidden}
     if(a.closest('header')) return;
     var n=document.createElement('span'); n.className='ps-consult-note';
     n.textContent="‘썸머 가이드 보고 상담 원해요’라고 보내 주세요";
-    a.insertAdjacentElement('afterend',n);
+    var w=document.createElement('div'); w.className='ps-consult-wrap';   // 10/28 담당자 — 버튼+안내를 한 묶음으로 오른쪽 끝에
+    a.parentNode.insertBefore(w,a); w.appendChild(a); w.appendChild(n);
   });
 })();
 </script>
