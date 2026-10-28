@@ -2,7 +2,7 @@
 <!-- channel-gate (10/27 test) : 첫 화면 카드 — 카카오 채널 추가 유도 · 잠금 없음 · 가이드 본문은 그대로 -->
 <!-- GA4 「썸머 가이드 2027」 (10/27 · 테스트 페이지만 · 숫자만 · 개인정보 없음) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-Q5TK276JCZ"></script>
-<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());gtag('config','G-Q5TK276JCZ');</script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());window.GV=/simple/.test(location.pathname)?'간단':'자세한';gtag('config','G-Q5TK276JCZ',{guide_version:window.GV});</script>
 <style>
 #psGate{position:fixed;inset:0;z-index:9999;display:flex;align-items:center;justify-content:center;padding:24px;background:rgba(255,255,255,.55);-webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px)}
 #psGate[hidden]{display:none}
@@ -114,7 +114,7 @@ body.ps-gate-on{overflow:hidden}
   var useForm=/[?&]consult=form(&|$)/.test(location.search);
   var btns=[].slice.call(document.querySelectorAll('a[href^="https://pf.kakao.com/_hxexnKb/chat"]')).filter(function(a){return !a.closest('#psEnd')});
   btns.forEach(function(a){
-    if(!a.closest('header')) a.textContent='우리 자녀 가능성 상담받기';   // 10/27 담당자 — 두 버전 본문 상담 버튼 이름 (머리말 작은 버튼은 그대로)
+    if(!a.closest('header')) a.textContent='자녀 합격 가능성 상담받기';   // 10/27 담당자 — 두 버전 본문 상담 버튼 이름 (머리말 작은 버튼은 그대로)
     if(useForm){ a.href=FORM; return; }
     if(a.closest('header')) return;
     var n=document.createElement('span'); n.className='ps-consult-note';
