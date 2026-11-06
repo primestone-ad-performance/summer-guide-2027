@@ -531,6 +531,9 @@ body.ps-gate-on{overflow:hidden}
 
   // 시험용: 주소 끝에 ?fgreset=1 을 붙이면 이 폰의 「풀림」을 지우고 처음 상태로
   try{ if(/[?&]fgreset=1/.test(location.search)){ sdel(KEY); sdel(SKEY); sdel(SKEY,true); } }catch(e){}
+  // 아이폰 사파리 → 카톡 안 브라우저로 넘어온 경우(fgho=1): 고르던 조건을 이어 받고, 채널 추가 창을 다시 띄운다
+  try{ var hq=new URLSearchParams(location.search); if(hq.get('fgho')==='1'){ var hs=hq.get('fgst'); if(hs) sset(SKEY,hs,true); window.__fgOpen=true;
+    ['fgho','fgst'].forEach(function(k){hq.delete(k)}); history.replaceState(null,'',location.pathname+(hq.toString()?'?'+hq.toString():'')+location.hash); } }catch(e){}
   // 이미 친구로 보이는 경우 — 친구톡은 채널 친구에게만 가므로 그 링크로 들어온 분은 창을 띄우지 않음
   try{ var q=new URLSearchParams(location.search); if(/friendtalk/i.test((q.get('utm_medium')||'')+(q.get('utm_source')||''))) unlock(); }catch(e){}
   // 이 사이트 어디서든 채널 추가 버튼을 누른 적 있으면 풀림 (맨 아래 노란 버튼 · 첫 화면 카드)
@@ -584,6 +587,7 @@ body.ps-gate-on{overflow:hidden}
       (st.p||[]).forEach(function(x){ if(now.indexOf(x.join(':'))<0){ var b=document.querySelector('button.opt[data-g="'+x[0]+'"][data-v="'+x[1]+'"]'); if(b) b.click(); } });
       setTimeout(function(){ scrollTo(0,st.y||0) },60);
     }
+    if(window.__fgOpen){ window.__fgOpen=false; setTimeout(function(){ m.hidden=false; t('filter_gate_shown',{from:'kakao_handoff'}); },500); return; }
     t('filter_gate_return',{cache:fromCache?1:0});
     toast('필터가 열렸습니다 — 이어서 고르시면 됩니다');
   }
@@ -591,6 +595,30 @@ body.ps-gate-on{overflow:hidden}
   document.addEventListener('visibilitychange',function(){ if(document.visibilityState==='visible' && ok()) restore(true) });
   function boot(){ if(window._ready) restore(false); else setTimeout(boot,60) }
   boot();
+})();
+</script>
+<script>/* 11/6 v5 (시험 중 · ?ktopen=1 일 때만) — 아이폰 사파리에서 노란 버튼 → 카톡 앱 「안」에서 같은 가이드를 고르던 조건 그대로 연다
+   · 카톡 앱으로 넘어가도 사파리로 돌아올 필요가 없음(「◀ Safari」를 못 찾아 길을 잃는 문제)
+   · 카톡이 안 열리면(앱 없음 등) 6초 뒤 원래 방식으로 */
+(function(){
+  try{ if(/[?&]ktopen=1/.test(location.search)) localStorage.setItem('ps_ktopen','1'); if(/[?&]ktopen=0/.test(location.search)) localStorage.removeItem('ps_ktopen'); }catch(e){}
+  function on(){ try{ return localStorage.getItem('ps_ktopen')==='1' }catch(e){ return /[?&]ktopen=1/.test(location.search) } }
+  var ua=navigator.userAgent, ios=/iPhone|iPad|iPod/.test(ua)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1), inKakao=/KAKAOTALK/i.test(ua);
+  var go=document.getElementById('fgGo'); if(!go) return;
+  var bypass=false;
+  go.addEventListener('click',function(e){
+    if(bypass||!ios||inKakao||!on()) return;
+    e.preventDefault(); e.stopImmediatePropagation();
+    var p=[].slice.call(document.querySelectorAll('button.opt[aria-pressed="true"]')).map(function(b){return [b.getAttribute('data-g'),b.getAttribute('data-v')]});
+    var st=JSON.stringify({p:p,y:Math.round(scrollY),at:Date.now()});
+    var q=new URLSearchParams(location.search); ['fgreset','ktopen','fgdebug'].forEach(function(k){q.delete(k)}); q.set('fgho','1'); q.set('fgst',st);
+    var target=location.origin+location.pathname+'?'+q.toString();
+    try{ if(typeof track==='function') track('channel_add_click',{where:'filter_gate',route:'kakao_handoff',transport_type:'beacon'}); }catch(err){}
+    document.getElementById('fgModal').hidden=true;
+    var left=false; function gone(){ left=true; } document.addEventListener('visibilitychange',function(){ if(document.visibilityState==='hidden') gone(); }); addEventListener('pagehide',gone);
+    (window.__ktNav||function(u){ location.href=u; })('kakaotalk://inappbrowser?url='+encodeURIComponent(target));
+    setTimeout(function(){ if(!left){ bypass=true; go.click(); bypass=false; } },6000);   // 카톡이 안 열렸으면 원래 방식
+  },true);
 })();
 </script>
 <script>/* 11/6 v4 — 사이트 안에서 바로 카카오 채널 추가 (카카오 앱 1271932 · 채널 _hxexnKb 연결됨 · JS SDK 도메인 summer.primestone.co.kr 등록)
