@@ -598,12 +598,13 @@ body.ps-gate-on{overflow:hidden}
   boot();
 })();
 </script>
-<script>/* 11/6 v5 (시험 중 · ?ktopen=1 일 때만) — 아이폰 사파리에서 노란 버튼 → 카톡 앱 「안」에서 같은 가이드를 고르던 조건 그대로 연다
+<script>/* 11/6 v5 (정식) — 아이폰 사파리에서 노란 버튼 → 카톡 앱 「안」에서 같은 가이드를 고르던 조건 그대로 연다
    · 카톡 앱으로 넘어가도 사파리로 돌아올 필요가 없음(「◀ Safari」를 못 찾아 길을 잃는 문제)
    · 카톡이 안 열리면(앱 없음 등) 6초 뒤 원래 방식으로 */
 (function(){
-  try{ if(/[?&]ktopen=1/.test(location.search)) localStorage.setItem('ps_ktopen','1'); if(/[?&]ktopen=0/.test(location.search)) localStorage.removeItem('ps_ktopen'); }catch(e){}
-  function on(){ try{ return localStorage.getItem('ps_ktopen')==='1' }catch(e){ return /[?&]ktopen=1/.test(location.search) } }
+  // 11/6 정식으로 켬 — 끄려면(시험용) 주소 끝에 ?ktopen=0
+  try{ if(/[?&]ktopen=0/.test(location.search)) localStorage.setItem('ps_ktopen','0'); if(/[?&]ktopen=1/.test(location.search)) localStorage.removeItem('ps_ktopen'); }catch(e){}
+  function on(){ try{ return localStorage.getItem('ps_ktopen')!=='0' }catch(e){ return !/[?&]ktopen=0/.test(location.search) } }
   var ua=navigator.userAgent, ios=/iPhone|iPad|iPod/.test(ua)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1), inKakao=/KAKAOTALK/i.test(ua);
   var go=document.getElementById('fgGo'); if(!go) return;
   var bypass=false;
