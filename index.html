@@ -593,4 +593,26 @@ body.ps-gate-on{overflow:hidden}
   boot();
 })();
 </script>
+<script>/* 11/6 v4 — 사이트 안에서 바로 카카오 채널 추가 (카카오 앱 1271932 · 채널 _hxexnKb 연결됨 · JS SDK 도메인 summer.primestone.co.kr 등록)
+   · 노란 버튼: SDK 가 준비됐으면 followChannel(같은 페이지에 머묾 → 아이폰 「뒤로」 문제 없음), 아니면 원래 링크로
+   · 버튼을 누르면 풀리는 규칙·조건 저장은 그대로(아래쪽 원래 코드가 같이 돈다) */
+(function(){
+  var JK='cf1b4b67c10ebbca2e5d40e26dbf1f46', PID='_hxexnKb', ready=false;
+  function init(){ try{ if(!Kakao.isInitialized()) Kakao.init(JK); ready=!!(Kakao.Channel&&Kakao.Channel.followChannel); }catch(e){ ready=false; } }
+  function load(){ if(window.Kakao){ init(); return; } var s=document.createElement('script'); s.src='https://t1.kakaocdn.net/kakao_js_sdk/2.7.4/kakao.min.js'; s.crossOrigin='anonymous'; s.onload=init; document.head.appendChild(s); }
+  function msg(s){ var ts=document.getElementById('psToast'); if(!ts) return; ts.textContent=s; ts.hidden=false; setTimeout(function(){ts.hidden=true},3500); }
+  function tr(n,p){ try{ if(typeof track==='function') track(n,p||{}); }catch(e){} }
+  load();
+  var go=document.getElementById('fgGo'); if(!go) return;
+  go.addEventListener('click',function(e){
+    if(!ready) return;                                   // SDK 가 아직이면 원래 방식(채널 화면으로 이동)
+    e.preventDefault();
+    var href=go.href;
+    Kakao.Channel.followChannel({channelPublicId:PID}).then(function(r){
+      var st=(r&&r.status)||'unknown'; tr('channel_follow_result',{status:st});
+      msg(st==='success'?'채널 추가 완료 — 이어서 고르시면 됩니다':'필터가 열렸습니다 — 이어서 고르시면 됩니다');
+    }).catch(function(err){ tr('channel_follow_result',{status:'error'}); location.href=href; });
+  },true);
+})();
+</script>
 </body></html>
