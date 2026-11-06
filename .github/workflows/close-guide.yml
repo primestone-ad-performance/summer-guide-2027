@@ -1,0 +1,25 @@
+name: close-guide
+# 2027-01-09(토) 00:00 KST 부터 가이드 본문을 공개 종료 안내로 바꾼다 (원본은 git 기록에 남음)
+on:
+  schedule:
+    - cron: '5 15 * * *'   # 매일 00:05 KST
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  close:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: 날짜 확인 후 교체
+        run: |
+          today=$(TZ=Asia/Seoul date +%Y%m%d)
+          if [ "$today" -lt 20270109 ]; then echo "아직 공개 기간 ($today)"; exit 0; fi
+          if cmp -s closed.html index.html; then echo "이미 종료됨"; exit 0; fi
+          cp closed.html index.html
+          cp closed.html simple.html
+          git config user.name "guide-bot"
+          git config user.email "guide-bot@users.noreply.github.com"
+          git add index.html simple.html
+          git commit -m "close: 공개 기간 종료 (2027-01-09)"
+          git push
