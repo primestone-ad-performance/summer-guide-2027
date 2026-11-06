@@ -506,14 +506,14 @@ body.ps-gate-on{overflow:hidden}
 #fgModal p{margin:0 0 20px;font-size:15.5px;line-height:1.55;color:var(--mute,#555)}
 #fgModal p.s{margin:12px 0 0;font-size:13.5px;line-height:1.5}
 #fgModal a.k{display:flex;align-items:center;justify-content:center;gap:8px;min-height:54px;border-radius:12px;background:#FEE500;color:#191919;font-size:17px;font-weight:700;text-decoration:none}
-#fgModal button.x{margin-top:8px;background:none;border:0;color:var(--mute,#777);font-size:14px;padding:8px}
+#fgModal button.x{display:block;margin:14px auto 0;padding:10px 14px;background:none;border:0;color:var(--mute,#666);font-size:15px;font-weight:500;font-family:inherit;text-decoration:underline;text-underline-offset:3px;cursor:pointer}
 </style>
 <div id="fgModal" hidden role="dialog" aria-modal="true" aria-labelledby="fgT"><div class="c">
 <h3 id="fgT">조건을 더 바꿔 보시려면<br>카카오 채널을 추가해 주세요</h3>
 <p>채널을 추가하시면 전공·마감·학년을 마음껏 바꿔 가며<br>자녀가 낼 수 있는 곳을 좁혀 보실 수 있습니다.</p>
 <a class="k" id="fgGo" href="https://pf.kakao.com/_hxexnKb/friend"><svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path fill="#191919" d="M12 3C6.48 3 2 6.58 2 11c0 2.85 1.86 5.35 4.66 6.77-.15.53-.97 3.41-1 3.64 0 0-.02.17.09.24.11.06.24.01.24.01.31-.04 3.62-2.37 4.19-2.77.6.08 1.2.12 1.82.12 5.52 0 10-3.58 10-8S17.52 3 12 3z"/></svg>카카오 채널 추가하고 계속 보기</a>
 <p class="s">추가하신 뒤 갤럭시는 <b>뒤로 가기</b>,<br>아이폰은 화면 <b>맨 위 시계 옆 작은 「◀」</b>를 누르시면<br>고르시던 화면 그대로 이어집니다.</p>
-<button class="x" type="button" id="fgX">나중에</button>
+<button class="x" type="button" id="fgX">필터는 다음에 쓸게요</button>
 </div></div>
 <script>
 (function(){
@@ -570,7 +570,7 @@ body.ps-gate-on{overflow:hidden}
     sset(SKEY,JSON.stringify({p:picked(),y:Math.round(scrollY),at:Date.now()}));
     setTimeout(function(){m.hidden=true},300);
   });
-  document.getElementById('fgX').addEventListener('click',function(){m.hidden=true; t('filter_gate_later');});
+  document.getElementById('fgX').addEventListener('click',function(){m.hidden=true; t('filter_gate_later'); toast('가이드 내용은 계속 보실 수 있습니다');});
   m.addEventListener('click',function(e){if(e.target===m){m.hidden=true}});
 
   // 돌아왔을 때 — 화면이 살아 있으면 그대로, 새로 열렸으면 저장해 둔 조건·위치를 다시 걸어 줌
