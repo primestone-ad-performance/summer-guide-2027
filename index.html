@@ -542,16 +542,17 @@ body.ps-gate-on{overflow:hidden}
     if(a.closest('.kkadd')) t('channel_add_click',{where:'bottom',transport_type:'beacon'}); },true);
 
   if('IntersectionObserver' in window && res){
-    new IntersectionObserver(function(es){es.forEach(function(x){ if(x.isIntersecting) markSeen('list'); })},{threshold:0.01,rootMargin:'0px 0px -35% 0px'}).observe(res);
+    // 11/9 — 결과 목록이 「제대로」 보일 때만: 목록의 절반 이상, 또는 화면 높이의 40% 이상이 보일 때 (살짝 걸친 건 안 침)
+    new IntersectionObserver(function(es){es.forEach(function(x){ var vis=x.intersectionRect.height; if(x.isIntersecting && vis>=Math.min(x.boundingClientRect.height*0.5, innerHeight*0.4)) markSeen('list'); })},{threshold:[0,0.1,0.2,0.3,0.4,0.5,0.6,0.8,1]}).observe(res);
   }
-  // 결과를 「봤다」 — ① 아래 결과 목록이 화면에 보임 ② 결과 이름 버튼을 누름 ③ 조건을 고른 뒤 4초 동안 더 안 바꿈(위 숫자·이름을 읽은 것)
+  // 결과를 「봤다」 — ① 아래 결과 목록이 화면에 보임 ② 결과 이름 버튼을 누름 ③ 조건을 고른 뒤 12초 동안 더 안 바꿈(위 숫자·이름을 읽은 것)
   var idle=null;
   function markSeen(why){ if(!seen && hasPick()){ seen=true; t('filter_result_seen',{why:why}); dbg(); } }
   document.addEventListener('click',function(e){
     if(!e.target.closest) return;
     if(e.target.closest('#chips button')){ markSeen('name'); return; }
     var b=e.target.closest('button.opt'); if(!b) return;
-    clearTimeout(idle); idle=setTimeout(function(){ markSeen('dwell') },4000);
+    clearTimeout(idle); idle=setTimeout(function(){ markSeen('dwell') },12000);   // 11/9 4초 → 12초 (조건을 여러 개 고르는 중간에 걸리던 것)
   });
   // 확인용: 주소에 ?fgdebug=1 → 화면 아래에 상태 표시
   var DBG=/[?&]fgdebug=1/.test(location.search), dbox=null;
