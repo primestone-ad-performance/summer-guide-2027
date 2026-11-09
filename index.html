@@ -578,6 +578,14 @@ body.ps-gate-on{overflow:hidden}
   m.addEventListener('click',function(e){if(e.target===m){m.hidden=true}});
 
   // 돌아왔을 때 — 화면이 살아 있으면 그대로, 새로 열렸으면 저장해 둔 조건·위치를 다시 걸어 줌
+  // 카톡으로 넘어온 뒤(2단계) 창 — 「또 막혔다」로 안 보이게 마지막 한 번이라고 말한다. 닫거나 누르면 원래 문구로
+  var orig=null;
+  function handoffCopy(on){ var h=m.querySelector('h3'), p=m.querySelector('p:not(.s)'), ps=m.querySelector('p.s'), g=document.getElementById('fgGo');
+    if(on){ if(!orig) orig=[h.innerHTML,p.innerHTML,g.lastChild.textContent];
+      h.innerHTML='카카오톡으로 넘어왔어요<br>마지막으로 한 번만 눌러 주세요'; p.innerHTML='노란 버튼을 누르고 카카오 창에서 확인하시면<br>바로 이어서 조건을 바꿔 보실 수 있습니다.'; if(ps) ps.hidden=true; g.lastChild.textContent='채널 추가 마치기'; }
+    else if(orig){ h.innerHTML=orig[0]; p.innerHTML=orig[1]; if(ps) ps.hidden=false; g.lastChild.textContent=orig[2]; orig=null; } }
+  document.getElementById('fgX').addEventListener('click',function(){ handoffCopy(false); });
+  document.getElementById('fgGo').addEventListener('click',function(){ setTimeout(function(){ handoffCopy(false); },400); });
   function restore(fromCache){
     var raw=sget(SKEY,true)||sget(SKEY); if(!raw) return;
     sdel(SKEY,true); sdel(SKEY);
@@ -588,7 +596,7 @@ body.ps-gate-on{overflow:hidden}
       (st.p||[]).forEach(function(x){ if(now.indexOf(x.join(':'))<0){ var b=document.querySelector('button.opt[data-g="'+x[0]+'"][data-v="'+x[1]+'"]'); if(b) b.click(); } });
       setTimeout(function(){ scrollTo(0,st.y||0) },60);
     }
-    if(window.__fgOpen){ window.__fgOpen=false; setTimeout(function(){ m.hidden=false; t('filter_gate_shown',{from:'kakao_handoff'}); },500); return; }
+    if(window.__fgOpen){ window.__fgOpen=false; setTimeout(function(){ handoffCopy(true); m.hidden=false; t('filter_gate_shown',{from:'kakao_handoff'}); },500); return; }
     t('filter_gate_return',{cache:fromCache?1:0});
     toast('필터가 열렸습니다 — 이어서 고르시면 됩니다');
   }
