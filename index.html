@@ -624,6 +624,7 @@ body.ps-gate-on{overflow:hidden}
     var q=new URLSearchParams(location.search); ['fgreset','ktopen','fgdebug'].forEach(function(k){q.delete(k)}); q.set('fgho','1'); q.set('fgst',st);
     var target=location.origin+location.pathname+'?'+q.toString();
     try{ if(typeof track==='function') track('channel_add_click',{where:'filter_gate',route:'kakao_handoff',transport_type:'beacon'}); }catch(err){}
+    try{ localStorage.setItem('ps_filter_unlock_v1','1'); }catch(err){}   // 사파리 쪽도 「풀림」 — QR 을 다시 찍으면 사파리로 열리므로 (11/9 실폰에서 창이 또 뜸)
     document.getElementById('fgModal').hidden=true;
     var left=false; function gone(){ left=true; } document.addEventListener('visibilitychange',function(){ if(document.visibilityState==='hidden') gone(); }); addEventListener('pagehide',gone);
     (window.__ktNav||function(u){ location.href=u; })('kakaotalk://inappbrowser?url='+encodeURIComponent(target));
