@@ -607,23 +607,25 @@ body.ps-gate-on{overflow:hidden}
   boot();
 })();
 </script>
-<script>/* 11/11 시험용 (fgtest) — 카톡 안 브라우저에서 노란 버튼 → SDK 팝업(「팝업 차단」 창) 대신 채널 화면을 바로 연다
-   · 주소 끝에 ?fgtest=a (카톡 채널 화면 앱 주소) 또는 ?fgtest=b (채널 웹 주소 · 같은 탭) 를 붙인 폰에서만 동작 · ?fgtest=0 으로 끔
-   · 꼬리표 없는 방문자 · QR 은 아무것도 안 바뀜 — 아이폰 확인 뒤 정식으로 켤지 정한다 */
+<script>/* 11/11 정식 — 카톡 안 브라우저(아이폰 · 갤럭시)에서 노란 버튼 → 카카오 「채널 추가」 화면을 앱 주소로 바로 연다
+   · 전에는 카카오 SDK 가 팝업으로 열려다 「팝업 차단」 창이 떴고, 닫으면 채널 추가 없이 필터가 풀렸다 (11/10 실폰)
+   · 주소는 카카오 채널 페이지(pf.kakao.com)가 카톡 안에서 쓰는 것과 같다: kakaoplus://plusfriend/home/{채널}/add?fromtype=web
+   · 채널 웹 화면으로 이동(10/27 「뒤로 못 돌아옴」)이 아니라 카톡 화면이 위에 떴다 닫히는 방식 · 카톡 밖(사파리 · 크롬)은 그대로
+   · 되돌리기: 주소 끝 ?fgtest=0 (그 폰만 예전 SDK 방식) · ?fgtest=1 다시 켬 */
 (function(){
-  try{ var mm=/[?&]fgtest=([ab0])/.exec(location.search); if(mm){ if(mm[1]==='0') localStorage.removeItem('ps_fgtest'); else localStorage.setItem('ps_fgtest',mm[1]); } }catch(e){}
-  var mode=null; try{ mode=localStorage.getItem('ps_fgtest'); }catch(e){}
-  if(mode!=='a'&&mode!=='b') return;
-  if(!/KAKAOTALK/i.test(navigator.userAgent)) return;
+  try{ var mm=/[?&]fgtest=([01ab])/.exec(location.search); if(mm){ if(mm[1]==='0') localStorage.setItem('ps_fgtest','0'); else localStorage.removeItem('ps_fgtest'); } }catch(e){}
+  var off=false; try{ off=localStorage.getItem('ps_fgtest')==='0'; }catch(e){}
+  if(off || !/KAKAOTALK/i.test(navigator.userAgent)) return;
   var go=document.getElementById('fgGo'); if(!go) return;
   go.addEventListener('click',function(e){
     e.preventDefault(); e.stopImmediatePropagation();
     var p=[].slice.call(document.querySelectorAll('button.opt[aria-pressed="true"]')).map(function(b){return [b.getAttribute('data-g'),b.getAttribute('data-v')]});
     var st=JSON.stringify({p:p,y:Math.round(scrollY),at:Date.now()});
     try{ sessionStorage.setItem('ps_filter_state_v1',st); localStorage.setItem('ps_filter_state_v1',st); localStorage.setItem('ps_filter_unlock_v1','1'); }catch(err){}
-    try{ if(typeof track==='function') track('channel_add_click',{where:'filter_gate',route:'fgtest_'+mode,transport_type:'beacon'}); }catch(err){}
+    try{ if(typeof track==='function') track('channel_add_click',{where:'filter_gate',route:'talk_scheme',transport_type:'beacon'}); }catch(err){}
     document.getElementById('fgModal').hidden=true;
-    (window.__ktNav||function(u){ location.href=u; })(mode==='a'?'kakaoplus://plusfriend/home/_hxexnKb':go.href);
+    var ts=document.getElementById('psToast'); if(ts){ ts.textContent='채널 추가 후 이 화면으로 돌아오시면 이어서 고르실 수 있습니다'; ts.hidden=false; setTimeout(function(){ts.hidden=true},4000); }
+    (window.__ktNav||function(u){ location.href=u; })('kakaoplus://plusfriend/home/_hxexnKb/add?fromtype=web');
   },true);
 })();
 </script>
