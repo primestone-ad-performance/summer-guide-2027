@@ -607,6 +607,26 @@ body.ps-gate-on{overflow:hidden}
   boot();
 })();
 </script>
+<script>/* 11/11 시험용 (fgtest) — 카톡 안 브라우저에서 노란 버튼 → SDK 팝업(「팝업 차단」 창) 대신 채널 화면을 바로 연다
+   · 주소 끝에 ?fgtest=a (카톡 채널 화면 앱 주소) 또는 ?fgtest=b (채널 웹 주소 · 같은 탭) 를 붙인 폰에서만 동작 · ?fgtest=0 으로 끔
+   · 꼬리표 없는 방문자 · QR 은 아무것도 안 바뀜 — 아이폰 확인 뒤 정식으로 켤지 정한다 */
+(function(){
+  try{ var mm=/[?&]fgtest=([ab0])/.exec(location.search); if(mm){ if(mm[1]==='0') localStorage.removeItem('ps_fgtest'); else localStorage.setItem('ps_fgtest',mm[1]); } }catch(e){}
+  var mode=null; try{ mode=localStorage.getItem('ps_fgtest'); }catch(e){}
+  if(mode!=='a'&&mode!=='b') return;
+  if(!/KAKAOTALK/i.test(navigator.userAgent)) return;
+  var go=document.getElementById('fgGo'); if(!go) return;
+  go.addEventListener('click',function(e){
+    e.preventDefault(); e.stopImmediatePropagation();
+    var p=[].slice.call(document.querySelectorAll('button.opt[aria-pressed="true"]')).map(function(b){return [b.getAttribute('data-g'),b.getAttribute('data-v')]});
+    var st=JSON.stringify({p:p,y:Math.round(scrollY),at:Date.now()});
+    try{ sessionStorage.setItem('ps_filter_state_v1',st); localStorage.setItem('ps_filter_state_v1',st); localStorage.setItem('ps_filter_unlock_v1','1'); }catch(err){}
+    try{ if(typeof track==='function') track('channel_add_click',{where:'filter_gate',route:'fgtest_'+mode,transport_type:'beacon'}); }catch(err){}
+    document.getElementById('fgModal').hidden=true;
+    (window.__ktNav||function(u){ location.href=u; })(mode==='a'?'kakaoplus://plusfriend/home/_hxexnKb':go.href);
+  },true);
+})();
+</script>
 <script>/* 11/6 v5 (정식) — 아이폰 사파리에서 노란 버튼 → 카톡 앱 「안」에서 같은 가이드를 고르던 조건 그대로 연다
    · 카톡 앱으로 넘어가도 사파리로 돌아올 필요가 없음(「◀ Safari」를 못 찾아 길을 잃는 문제)
    · 카톡이 안 열리면(앱 없음 등) 6초 뒤 원래 방식으로 */
